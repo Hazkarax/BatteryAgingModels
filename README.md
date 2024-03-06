@@ -10,7 +10,7 @@ In order to accomplish the following, this model combines the results of two sci
 
 The Calendar equation model, comes from the Conference Paper "Empirical Modeling of Degradation in Litium-ion Batteries and Validation in Complex Scenarios", by Apoorva Roy et. al. The Equation used for calendar aging, are the following for the 5 Degree Celsius ambient temperature case:
 
-$C_{loss, cal} = (0.09 \cdot SOC+0.01)\cdot sqrt(t)$
+$C_{loss, cal} = (0.09 \cdot SOC+0.01)\cdot \sqrt{t}$
 
 In the 45 ambient degree case, the capacity loss is linear:
 
@@ -18,7 +18,7 @@ $C_{loss, cal} = 1+(0.004 \cdot SOC) \cdot t$
 
 The cyclic aging model comes from the Peer-reviewed Journal of Energy Storage, and the article "Empirical Li-ion model derived from single particle model", by Abrina Kathrin Rechkemmer et. al. And states
 
-$C_{loss, cyc} = a_1(t+a_2\sqrt(t))\cdot (V+a_3)\cdot (exp(\frac{a_4}{T})+I_0\cdot a_5(DOD + a_6)^2)$
+$C_{loss, cyc} = a_1(t+a_2\sqrt{t})\cdot (V+a_3)\cdot (exp(\frac{a_4}{T})+I_0\cdot a_5(DOD + a_6)^2)$
 
 
 ## The Driving Cycle
