@@ -21,3 +21,5 @@ The cyclic aging model comes from the Peer-reviewed Journal of Energy Storage, a
 $C_{loss, cyc} = a_1(t+a_2\sqrt(t))\cdot (V+a_3)\cdot (exp(\frac{a_4}{T})+I_0\cdot a_5(DOD + a_6)^2)$
 
 
+## The Driving Cycle
+The driving cycle is based of the Volkswagen ID. 4 Pro, as it has support for V2G, and was one of the most sold cars in Europe after its initial release. The driving is based on mild weather highway driving data, taken from EV-Database (https://ev-database.org/car/2028/Volkswagen-ID4-Pro). The range was during those conditions specified to be 400 KM. The discharge rate is therefore chosen to be $C = \frac{1}{4}$, which simplifies to 19.25 kW continous discharge based on the usable 77 kWh of capacity in the car. The driving cycle is initial choosen to continue during 4 hours, from 100% SOC to 0%, which means a DOD of 100%. This is assumed for the driving of both the cases.
