@@ -18,7 +18,7 @@ no_BD_dailycycle = [1, 1, 1, 1, 1, 1, 1, 1, 1, 0.75, 0.5, 0.25, 0, 0.25, 0.5, 0.
 no_BD_power = [0, 0, 0, 0, 0, 0, 0, 0, 19.25, 19.25, 19.25, 19.25, 19.25, 19.25, 19.25, 19.25, 0, 0, 0, 0, 0, 0, 0, 0];
 BD_DOD = 0.5; % Average, approx 2 cycles with 25% and one with 100%
 no_BD_DOD = 1;
-no_BD_SOC = 0.8;
+no_BD_SOC = 1;
 
 
 C_rate = 1/4; % Same during charge and discharge
