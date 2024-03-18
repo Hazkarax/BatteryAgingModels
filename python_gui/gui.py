@@ -1,13 +1,16 @@
 import customtkinter
 import tkinter
 from CTkMessagebox import CTkMessagebox
+import calculation
+
+#TODO: Error message if End-Of-Day SOC ≠ Initial SOC
 
 root = customtkinter.CTk()
 root.title("Battery Aging Model")
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("dark-blue")
 
-## GUI
+## GUI ##
 
 # Initial setting frame
 settings_frame = customtkinter.CTkFrame(master=root)
@@ -20,8 +23,9 @@ init_soc_label.grid(row=0, column=0, padx=15, pady=7)
 init_soc_entry = customtkinter.CTkEntry(master=settings_frame, placeholder_text="80%")
 init_soc_entry.grid(row=0, column=1)
 
-init_soc_btn = customtkinter.CTkButton(master=settings_frame, text="Set")
-init_soc_btn.grid(row=0, column=2, padx=15)
+# Automatically retrieved
+# init_soc_btn = customtkinter.CTkButton(master=settings_frame, text="Set")
+# init_soc_btn.grid(row=0, column=2, padx=15)
 
 # Add C-rate of the battery
 c_rate_label = customtkinter.CTkLabel(master=settings_frame, text="C-rate")
@@ -30,8 +34,14 @@ c_rate_label.grid(row=1, column=0, padx=15, pady=7)
 c_rate_entry = customtkinter.CTkEntry(master=settings_frame, placeholder_text="0.2")
 c_rate_entry.grid(row=1, column=1)
 
-c_rate_btn = customtkinter.CTkButton(master=settings_frame, text="Set")
-c_rate_btn.grid(row=1, column=2, padx=15)
+sim_days_label = customtkinter.CTkLabel(master=settings_frame, text="Simulation Days")
+sim_days_label.grid(row=1, column=2, padx=10)
+sim_days_entry = customtkinter.CTkEntry(master=settings_frame, placeholder_text="30")
+sim_days_entry.grid(row=1, column=3, padx=10)
+
+# Automatically retrieved
+# c_rate_btn = customtkinter.CTkButton(master=settings_frame, text="Set")
+# c_rate_btn.grid(row=1, column=2, padx=15)
 
 class RadioButton:
     def __init__(self, parent, i, j, var_list, global_status_list):
@@ -46,7 +56,7 @@ class RadioButton:
     
     def on_click(self):
         self.global_status_list[self.i] = self.j  # Update the global status list
-        print(f"Radio button clicked: i={self.i}, j={self.j}, value={self.var.get()}")
+        #print(f"Radio button clicked: i={self.i}, j={self.j}, value={self.var.get()}")
 
 def calc_soc(global_status_list, n):
     if init_soc_entry.get() == "":
@@ -76,6 +86,14 @@ def calc_soc(global_status_list, n):
         else:
             hour_soc = customtkinter.CTkLabel(vehicle_tab.tab(f"Cycle {n}"), text=f"{socs[s]} [%]")
             hour_soc.grid(row=3 + s, column=4)
+
+    if global_status_list[-1] == 2 and socs[-1] != soc:
+        CTkMessagebox(title="Invalid Daily Cycle", message="If Battery ends in idle, it must equal the initial SOC.")
+    elif global_status_list[-1] == 1 and socs[-1] != soc+100*c_rate:
+        CTkMessagebox(title="Invalid Daily Cycle", message="If Battery ends in discharge, it must equal the initial SOC + C-rate*100")
+    elif global_status_list[-1] == 0 and socs[-1] != soc-100*c_rate:
+        CTkMessagebox(title="Invalid Daily Cycle", message="If Battery ends in charge, it must equal the initial SOC - C-rate*100")
+    return(socs)
 
 # Create a tabview for the different driving cycles
 vehicle_tab = customtkinter.CTkTabview(master=root)
@@ -135,7 +153,7 @@ calculate_soc_btn1.grid(row=0, column=0, padx=10, pady=20)
 calculate_soc_btn2 = customtkinter.CTkButton(master=calculate_frame, text="Calculate SOC Cycle 2", command=lambda: calc_soc(global_status_list2, 2))
 calculate_soc_btn2.grid(row=0, column=1, padx=10, pady=20)
 
-plot_result_btn = customtkinter.CTkButton(master=calculate_frame, text="Plot Results")
+plot_result_btn = customtkinter.CTkButton(master=calculate_frame, text="Plot Results", command=lambda: calculation.calc_deg(calc_soc(global_status_list1, 1), calc_soc(global_status_list2, 2), int(sim_days_entry.get()), global_status_list1, global_status_list2, float(c_rate_entry.get())))
 plot_result_btn.grid(row=0, column=2, padx=10, pady=20)
 
 clear_result_btn = customtkinter.CTkButton(master=calculate_frame, text="Clear Results")
