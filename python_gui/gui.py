@@ -87,12 +87,15 @@ def calc_soc(global_status_list, n):
             hour_soc = customtkinter.CTkLabel(vehicle_tab.tab(f"Cycle {n}"), text=f"{socs[s]} [%]")
             hour_soc.grid(row=3 + s, column=4)
 
-    if global_status_list[-1] == 2 and socs[-1] != soc:
-        CTkMessagebox(title="Invalid Daily Cycle", message="If Battery ends in idle, it must equal the initial SOC.")
-    elif global_status_list[-1] == 1 and socs[-1] != soc+100*c_rate:
-        CTkMessagebox(title="Invalid Daily Cycle", message="If Battery ends in discharge, it must equal the initial SOC + C-rate*100")
-    elif global_status_list[-1] == 0 and socs[-1] != soc-100*c_rate:
-        CTkMessagebox(title="Invalid Daily Cycle", message="If Battery ends in charge, it must equal the initial SOC - C-rate*100")
+
+    if socs[-1] != float(init_soc_entry.get()):
+        CTkMessagebox(title="Invalid Daily Cycle", message="Cycle must return to base SOC")
+    # elif global_status_list[-1] == 1 and socs[-1] != soc+100*c_rate:
+    #     CTkMessagebox(title="Invalid Daily Cycle", message="If Battery ends in discharge, it must equal the initial SOC + C-rate*100")
+    # elif global_status_list[-1] == 0 and socs[-1] != soc-100*c_rate:
+    #     CTkMessagebox(title="Invalid Daily Cycle", message="If Battery ends in charge, it must equal the initial SOC - C-rate*100")
+
+    
     return(socs)
 
 # Create a tabview for the different driving cycles

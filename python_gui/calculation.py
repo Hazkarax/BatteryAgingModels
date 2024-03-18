@@ -98,21 +98,21 @@ def calc_deg(daily_soc, daily_soc2, sim_days, global_status_list1, global_status
             i = i+j
 
 
-    deg = []
+    deg2 = []
     
     # Initial value, cold calendar aging
     t = np.linspace(0, sim_days*24, sim_days*24)
     val = (0.09*soc2[0]/100+0.01)*np.sqrt(t[0]);
-    deg.append(val)
+    deg2.append(val)
     for d in range(1, len(dod)):
         if dod[d] == 0: # The battery is idle
-            deg.append(val+(0.045*soc2[d]/100+0.005)/(np.sqrt(t[d])))
+            deg2.append(val+(0.045*soc2[d]/100+0.005)/(np.sqrt(t[d])))
         else: # Battery is Cycling
-            deg.append(val+a1*(a2/(2*np.sqrt(t[d]))+1)*(a3+Voltage)*(np.exp(a4/T)+a5*I_0*(a6+dod[d]/100)**(2)))
-        val = deg[-1]
+            deg2.append(val+a1*(a2/(2*np.sqrt(t[d]))+1)*(a3+Voltage)*(np.exp(a4/T)+a5*I_0*(a6+dod[d]/100)**(2)))
+        val = deg2[-1]
     
     plt.subplot(2, 1, 2)
-    plt.plot(t, deg)
-    plt.title(f"Cycle 1 Degredation")
+    plt.plot(t, deg2)
+    plt.title(f"Cycle 2 Degredation")
 
     plt.show()
