@@ -3,7 +3,6 @@ import tkinter
 from CTkMessagebox import CTkMessagebox
 import calculation
 
-#TODO: Error message if End-Of-Day SOC ≠ Initial SOC
 
 root = customtkinter.CTk()
 root.title("Battery Aging Model")
@@ -12,6 +11,7 @@ customtkinter.set_default_color_theme("dark-blue")
 
 ## GUI ##
 
+#region Settings
 # Initial setting frame
 settings_frame = customtkinter.CTkFrame(master=root)
 settings_frame.grid(row=0, column=0)
@@ -20,39 +20,35 @@ settings_frame.grid(row=0, column=0)
 init_soc_label = customtkinter.CTkLabel(master=settings_frame, text="Base SOC:")
 init_soc_label.grid(row=0, column=0, padx=15, pady=7)
 
-init_soc_entry = customtkinter.CTkEntry(master=settings_frame, placeholder_text="80%")
+init_soc_entry = customtkinter.CTkEntry(master=settings_frame)
 init_soc_entry.grid(row=0, column=1)
 
-# Automatically retrieved
-# init_soc_btn = customtkinter.CTkButton(master=settings_frame, text="Set")
-# init_soc_btn.grid(row=0, column=2, padx=15)
 
 # Add C-rate of the battery
 c_rate_label = customtkinter.CTkLabel(master=settings_frame, text="C-rate")
 c_rate_label.grid(row=1, column=0, padx=15, pady=7)
 
-c_rate_entry = customtkinter.CTkEntry(master=settings_frame, placeholder_text="0.2")
+c_rate_entry = customtkinter.CTkEntry(master=settings_frame)
 c_rate_entry.grid(row=1, column=1)
 
 sim_days_label = customtkinter.CTkLabel(master=settings_frame, text="Simulation Days")
 sim_days_label.grid(row=1, column=2, padx=10)
-sim_days_entry = customtkinter.CTkEntry(master=settings_frame, placeholder_text="30")
+
+sim_days_entry = customtkinter.CTkEntry(master=settings_frame)
 sim_days_entry.grid(row=1, column=3, padx=10)
 
-# Automatically retrieved
-# c_rate_btn = customtkinter.CTkButton(master=settings_frame, text="Set")
-# c_rate_btn.grid(row=1, column=2, padx=15)
+#endregion
 
 class RadioButton:
     def __init__(self, parent, i, j, var_list, global_status_list):
-        self.parent = parent
-        self.i = i
-        self.j = j
+        self.parent = parent # Parent is given as the Cycle Tab
+        self.i = i # i-coordinates indicate which row the button belongs to
+        self.j = j # j-coordinates indicate which column the button belongs to
         self.var_list = var_list
-        self.global_status_list = global_status_list
-        self.var = var_list[i]
+        self.global_status_list = global_status_list # Indicates the status of each hour
+        self.var = var_list[i] 
         self.button = customtkinter.CTkRadioButton(parent, text="", value=self.j, variable=self.var, command=self.on_click)
-        self.button.grid(row=3 + self.i, column=1 + self.j, sticky="E" if self.j == 0 else "S", padx=8)
+        self.button.grid(row=3 + self.i, column=1 + self.j, sticky="E" if self.j == 0 else "S", padx=8) # Sticky helps the alignment somewhat
     
     def on_click(self):
         self.global_status_list[self.i] = self.j  # Update the global status list
@@ -98,20 +94,23 @@ def calc_soc(global_status_list, n):
     
     return(socs)
 
+#region Cycle Tabs
 # Create a tabview for the different driving cycles
 vehicle_tab = customtkinter.CTkTabview(master=root)
 vehicle_tab.grid(row=1, column=0, columnspan=5)
 vehicle_tab.add("Cycle 1")
 vehicle_tab.add("Cycle 2")
+#endregion
 
 # Create IntVar lists for each cycle
-var_list_cycle1 = [tkinter.IntVar(value=2) for _ in range(24)]
+var_list_cycle1 = [tkinter.IntVar(value=2) for _ in range(24)] # A tkinter function which helps the program understand which Radiobuttons can be activated simoltaneously
 var_list_cycle2 = [tkinter.IntVar(value=2) for _ in range(24)]
 
 # Global lists to store the status of all radio buttons for each cycle
 global_status_list1 = [2] * 24  # Initialized with idle status (2) for all hours
 global_status_list2 = [2] * 24  # Initialized with idle status (2) for all hours
 
+#region Hours in Cycle 1
 # Add headers for Cycle 1
 headers = ["Hour", "Charging", "Discharging", "Idleing", "SOC"]
 for idx, header in enumerate(headers):
@@ -129,7 +128,9 @@ for i in range(24):
     
     hour_soc = customtkinter.CTkLabel(vehicle_tab.tab("Cycle 1"), text="# [%]")
     hour_soc.grid(row=3 + i, column=4, sticky="E", padx=8)
+#endregion
 
+#region Hours in Cycle 2
 # Add headers for Cycle 2
 for idx, header in enumerate(headers):
     header_label = customtkinter.CTkLabel(vehicle_tab.tab("Cycle 2"), text=header)
@@ -146,7 +147,9 @@ for i in range(24):
     
     hour_soc = customtkinter.CTkLabel(vehicle_tab.tab("Cycle 2"), text="# [%]")
     hour_soc.grid(row=3 + i, column=4, sticky="E", padx=8)
+ #endregion
 
+#region Calculate Buttons
 calculate_frame = customtkinter.CTkFrame(master=root)
 calculate_frame.grid(row=2, column=0)
 
@@ -161,5 +164,7 @@ plot_result_btn.grid(row=0, column=2, padx=10, pady=20)
 
 clear_result_btn = customtkinter.CTkButton(master=calculate_frame, text="Clear Results")
 clear_result_btn.grid(row=0, column=3, padx=10, pady=20)
+
+#endregion
 
 root.mainloop()
